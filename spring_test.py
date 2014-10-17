@@ -19,7 +19,7 @@ def get_coords(coords):
 def K(N, i):
 	return 500.0 + 200.0 * (N/3.0 - i + 1.0)**2
 
-W = 500.0
+W = 50.0
 L0 = 10.0
 
 def PE(*args):
@@ -36,47 +36,7 @@ def PE(*args):
 		ret += K(N, i) * dL * dL * 0.5
 
 	for i in range(1,N+1):
-		ret += W * Y[i]
-
-	return ret
-
-def gradPE(*args):
-	## NÃO FUNCIONA!!!
-	N, X, Y = get_coords(args)
-
-	retX = N * [0.0]
-	retY = N * [0.0]
-	prevK = 0.0
-	prevdL = 1.0
-	for i in range(1,N+1):
-		currK = K(N, i-1)
-		currdL = dist(X[i], Y[i], X[i+1], Y[i+1]) - L0
-		retX[i-1] = currK * currdL * (X[i] - X[i+1]) / (currdL + L0) + prevK * prevdL * (X[i] - X[i-1]) / (prevdL + L0)
-		retY[i-1] = currK * (Y[i] - Y[i+1]) + prevK * (Y[i] - Y[i-1]) + W
-		prevK = currK
-		prevdL = currdL
-	
-	return np.array(list(itertools.chain(*zip(retX, retY))))
-
-def hessPE(N):
-	## NÂO FUNCIONA!!!
-	Ks = [0.0] + [K(N,i) for i in range(N)] + [0.0]
-	ret = np.identity(2*N)
-
-	for i in range(1,N+1):
-		for j in (-1,0,1):
-			if 1 <= i+j <= N:
-				if j == -1:
-					val = -Ks[i-1]
-				elif j == 0:
-					val = Ks[i] + Ks[i-1]
-				else:
-					val = -Ks[i]
-
-				c = (i-1)*2
-				d = c + 2*j
-				ret[c, d] = val
-				ret[c+1, d+1] = val
+		ret += W * i * Y[i]
 
 	return ret
 
