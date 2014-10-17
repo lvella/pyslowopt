@@ -92,7 +92,7 @@ def main():
 			csvwriter = csv.writer(csvfile)
 			size = max(len(newton_hist), len(sd_hist), len(powell_hist))
 			csvwriter.writerow(['Iteração', 'Newton', 'Máxima descida', 'Powell'])
-			for row in itertools.zip_longest(range(1, size+1), newton_hist, sd_hist, powell_hist, fillvalue='--'):
+			for row in itertools.zip_longest(range(1, size+1), newton_hist, sd_hist, powell_hist, fillvalue=''):
 				csvwriter.writerow(row)
 	except IndexError:
 		pass
