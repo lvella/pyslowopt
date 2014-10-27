@@ -60,7 +60,7 @@ def min_1d(Xini, S, F, a=-10, b=10, steps=30):
     if ob is None:
         ob = omega(b)
 
-    rhs = np.array([oa, ox, oy, ob])
+    rhs = [oa, ox, oy, ob]
 
     p = np.linalg.solve(A, rhs)
 
@@ -76,6 +76,8 @@ def min_1d(Xini, S, F, a=-10, b=10, steps=30):
     elif is_valid(r2):
         alpha = r2
     else:
-        raise "Nenhum ponto de inflexão encontrado dentro do intervalo inicial."
+	# Sover error is bigger than the difference between the values,
+	# take the smaller of them
+        alpha = [a,x,y,b][rhs.index(min(rhs))]
 
     return Xini + alpha * S

@@ -3,7 +3,7 @@
 import numpy as np
 import math
 import itertools
-from opt_methods import newton, steepest_descent, powell
+from opt_methods import newton, steepest_descent, powell, numerical_grad
 
 def dist(X0, Y0, X1, Y1):
 	return math.sqrt((X1 - X0)**2 + (Y1 - Y0)**2)
@@ -40,20 +40,6 @@ def PE(*args):
 	for i in range(1,N+1):
 		ret += W * i * Y[i]
 
-	return ret
-
-def numerical_grad(F, delta):
-	half_delta = delta * 0.5
-	def ret(*X):
-		X = list(X)
-		grad = []
-		for i in range(len(X)):
-			a = X[:]
-			a[i] -= half_delta
-			b = X[:]
-			b[i] += half_delta
-			grad.append((F(*b) - F(*a)) / delta)
-		return np.array(grad)
 	return ret
 
 import csv
