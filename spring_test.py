@@ -3,7 +3,7 @@
 import numpy as np
 import math
 import itertools
-from opt_methods import newton, steepest_descent, powell, numerical_grad
+from opt_methods import newton, steepest_descent, variable_matrix, powell, numerical_grad
 
 def dist(X0, Y0, X1, Y1):
 	return math.sqrt((X1 - X0)**2 + (Y1 - Y0)**2)
@@ -75,12 +75,20 @@ def main():
 	powell_hist, i, X = powell(Xini, PE)
 	print_result(i, X)
 
+	print('DFP:')
+	dfp_hist, i, X = variable_matrix(Xini, PE, grad)
+	print_result(i, X)
+
+	print('BFGS:')
+	bfgs_hist, i, X = variable_matrix(Xini, PE, grad, 1.0)
+	print_result(i, X)
+
 	try:
 		with open(sys.argv[1], 'w', newline='') as csvfile:
 			csvwriter = csv.writer(csvfile)
-			size = max(len(newton_hist), len(sd_hist), len(powell_hist))
-			csvwriter.writerow(['Iteração', 'Newton', 'Máxima descida', 'Powell'])
-			for row in itertools.zip_longest(range(1, size+1), newton_hist, sd_hist, powell_hist, fillvalue=''):
+			size = max(len(newton_hist), len(sd_hist), len(powell_hist), len(dfp_hist), len(bfgs_hist))
+			csvwriter.writerow(['Iteração', 'Newton', 'Máxima descida', 'Powell', 'DFP', 'BFGS'])
+			for row in itertools.zip_longest(range(1, size+1), newton_hist, sd_hist, powell_hist, dfp_hist, bfgs_hist, fillvalue=''):
 				csvwriter.writerow(row)
 	except IndexError:
 		pass
