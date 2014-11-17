@@ -32,7 +32,7 @@ def steepest_descent(Xini, F, gradF, search_radius=10, abs_tolerance=1e-4, rel_t
 
     return history, i, X
 
-def variable_matrix(Xini, F, gradF=None, theta=0.0, search_radius=10, abs_tolerance=1e-4, rel_tolerance=1e-3, max_iters=100):
+def variable_matrix(Xini, F, gradF=None, theta=0.0, search_radius=3, abs_tolerance=1e-4, rel_tolerance=1e-3, max_iters=1000):
     if gradF is None:
         gradF = numerical_grad(F, 0.01)
 
@@ -45,6 +45,7 @@ def variable_matrix(Xini, F, gradF=None, theta=0.0, search_radius=10, abs_tolera
         S = -np.dot(inv_hess, curr_grad)
         Xprev = X
         X = min_1d(X, S, F, -search_radius, search_radius)
+
         history.append(F(*X))
 
         if conv_test.has_converged(Xprev, X):
@@ -72,9 +73,11 @@ def powell(Xini, F, abs_tolerance=1e-4, rel_tolerance=1e-3, max_iters=100):
     for i in range(1, max_iters+1):
         for S in H:
             X = min_1d(X, S, F)
+
         S = X - Xini
         Xprev = X
         X = min_1d(X, S, F)
+
         history.append(F(*X))
 
         if conv_test.has_converged(Xprev, X):

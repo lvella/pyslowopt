@@ -15,7 +15,7 @@ def run():
 	Xini = np.array([0.0, 0.0])
 	for l in (0.0, 1.0, -4.0):
 		print('Initial λ =', l)
-		X = alm(Xini, F, [h], [l], 1, 2, 1024, newton, 3)
+		X = alm(Xini, F, [], [h], [], [l], 1, 2, 1024, newton, max_iters=3)
 		print('------------------')
 
 

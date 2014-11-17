@@ -4,20 +4,34 @@
 import numpy as np
 import numpy.linalg
 
-def bhaskara(a, b, c):
-    delta = b*b - 4.0*a*c
+class UseLeast(Exception):
+    pass
 
-    x1 = (-b + np.sqrt(delta)) / (2.0 * a)
-    x2 = (-b - np.sqrt(delta)) / (2.0 * a)
+def bhaskara(a, b, c):
+    np.seterr(all='raise')
+    delta = b*b - 4.0*a*c
+    if delta < 0.0:
+        raise UseLeast()
+
+    try:
+        x1 = (-b + np.sqrt(delta)) / (2.0 * a)
+        x2 = (-b - np.sqrt(delta)) / (2.0 * a)
+    except:
+        raise UseLeast()
 
     return x1, x2
 
 tau = (np.sqrt(5.0) - 1.0) / 2.0 # Número de ouro
 
 def min_1d(Xini, S, F, a=-10, b=10, steps=30):
+    S = S / np.linalg.norm(S)
 
     def omega(alpha):
         Xnew = Xini + alpha * S
+        #for i in range(len(Xnew)):
+        #    if Xnew[i] < 0:
+        #        Xnew[i] = 0.1
+
         return F(*Xnew)
 
     ### Método da seção áurea:
@@ -43,7 +57,6 @@ def min_1d(Xini, S, F, a=-10, b=10, steps=30):
             x, ox = y, oy
             y = a + tau * (b - a)
             oy = omega(y)
-        #print(a, x, y, b)
 
     ### Interpolação cúbica:
 
@@ -62,22 +75,35 @@ def min_1d(Xini, S, F, a=-10, b=10, steps=30):
 
     rhs = [oa, ox, oy, ob]
 
-    p = np.linalg.solve(A, rhs)
+    try:
+        p = np.linalg.solve(A, rhs)
 
-    r1, r2 = bhaskara(3.0*p[3], 2.0*p[2], p[1])
+        r1, r2 = bhaskara(3.0*p[3], 2.0*p[2], p[1])
 
-    def is_valid(alpha):
-        return a <= alpha <= b
+        def is_valid(alpha):
+            return a <= alpha <= b
 
-    if is_valid(r1) and is_valid(r2):
-        alpha = r1 if omega(r1) < omega(r2) else r2
-    elif is_valid(r1):
-        alpha = r1
-    elif is_valid(r2):
-        alpha = r2
-    else:
-	# Sover error is bigger than the difference between the values,
-	# take the smaller of them
+        if is_valid(r1) and is_valid(r2):
+            alpha = r1 if omega(r1) < omega(r2) else r2
+        elif is_valid(r1):
+            alpha = r1
+        elif is_valid(r2):
+            alpha = r2
+        else:
+            # Sover error is bigger than the difference between
+            # the values, take the smaller of them
+            raise UseLeast()
+    except (UseLeast, numpy.linalg.linalg.LinAlgError):
         alpha = [a,x,y,b][rhs.index(min(rhs))]
 
-    return Xini + alpha * S
+    Xnew = Xini + alpha * S
+    #for i in range(len(Xnew)):
+    #    if Xnew[i] < 0:
+    #        Xnew[i] = 0.1
+
+    #print("S:",S)
+    #print("X:",Xnew)
+    #print("alpha:",alpha)
+    #input('.')
+
+    return Xnew

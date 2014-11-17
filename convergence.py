@@ -16,6 +16,17 @@ class ConvergenceTester:
 
         return abs_conv and rel_conv
 
+    def test_constaints(self, h_list, g_list, X):
+        for h in h_list:
+            hval = math.fabs(h(*X))
+            if hval > self.rel_tolerance:
+                return False
+        for g in g_list:
+            gval = g(*X)
+            if gval > self.rel_tolerance:
+                return False
+        return True
+
     def has_converged(self, *args):
         test = self.test_convergence(*args)
         if test and self.first_test_passed:
