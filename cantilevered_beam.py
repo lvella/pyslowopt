@@ -2,7 +2,7 @@
 
 import numpy as np
 from functools import partial
-from opt_methods import variable_matrix, powell
+from opt_methods import variable_metric, powell
 from constrained import alm
 
 def get_sizes(sizes):
@@ -80,7 +80,7 @@ def main():
 
     lambda_ini = np.zeros(len(g_list))
 
-    history, iters, X, g_lambda, h_lambda = alm(Xini, V, g_list, [], lambda_ini, [], 5, 2, 100000, variable_matrix, abs_tolerance=100, rel_tolerance=1e-4, max_iters=1000)
+    history, iters, X, g_lambda, h_lambda = alm(Xini, V, g_list, [], lambda_ini, [], 5, 2, 100000, variable_metric, abs_tolerance=100, rel_tolerance=1e-4, max_iters=1000)
     print('Projeto final:', ', '.join(('{:.3}'.format(e) for e in X)))
     print('Número de iterações MMLA:', iters)
 

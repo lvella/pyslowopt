@@ -32,7 +32,7 @@ def steepest_descent(Xini, F, gradF, search_radius=10, abs_tolerance=1e-4, rel_t
 
     return history, i, X
 
-def variable_matrix(Xini, F, gradF=None, theta=0.0, search_radius=3, abs_tolerance=1e-4, rel_tolerance=1e-3, max_iters=1000):
+def variable_metric(Xini, F, gradF=None, theta=0.0, search_radius=3, abs_tolerance=1e-4, rel_tolerance=1e-3, max_iters=1000):
     if gradF is None:
         gradF = numerical_grad(F, 0.01)
 
